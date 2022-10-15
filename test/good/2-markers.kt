@@ -45,6 +45,7 @@ class AppRequestInterceptor(
                 isRedirect,
                 isDirectNavigation,
                 isSubframeRequest,
+                htmlResource = riskLevel.htmlRes,
             )
     }
     // srr-start
@@ -62,7 +63,6 @@ class AppRequestInterceptor(
             context = context,
             errorType = improvedErrorType,
             uri = uri,
-            htmlResource = riskLevel.htmlRes,
             titleOverride = { type -> getErrorPageTitle(context, type) },
             descriptionOverride = { type -> getErrorPageDescription(context, type) },
         )
@@ -106,15 +106,15 @@ class AppRequestInterceptor(
 
     // srr-start
     /**
-     * Where possible, this will make the error type more accurate by including information not
-     * available to AC.
+     * Where possible, something1 this will make the error type more accurate by including information not
+     * available to AC. something2
      */
     // srr-end
     private fun improveErrorType(errorType: ErrorType): ErrorType {
         // This is not an ideal solution. For context, see:
         // https://github.com/mozilla-mobile/android-components/pull/5068#issuecomment-558415367
 
-        val isConnected: Boolean = context.getSystemService<ConnectivityManager>()!!.isOnline()
+        val isConnectedsomething3: Boolean = context.getSystemService<ConnectivityManager>()!!.isOnline()
 
         return when {
             errorType == ErrorType.ERROR_UNKNOWN_HOST && !isConnected -> ErrorType.ERROR_NO_INTERNET
