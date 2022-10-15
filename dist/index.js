@@ -9521,8 +9521,8 @@ module.exports = class Differ {
   constructor(oldCode, newCode, files, ignoreList) {
     this.oldCode = oldCode
     this.newCode = newCode
-    this.files = JSON.parse(files);
-    this.ignoreList = JSON.parse(ignoreList);
+    this.files = JSON.parse(files.replace(/\\/g, ""));
+    this.ignoreList = JSON.parse(ignoreList.replace(/\\/g, ""));
   }
 
   isStale() {
