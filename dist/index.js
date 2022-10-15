@@ -9507,6 +9507,76 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 417:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+const fs = __nccwpck_require__(7147)
+const path = __nccwpck_require__(1017);
+
+module.exports = class Differ {
+
+  constructor(oldCode, newCode, files, ignoreList) {
+    this.oldCode = oldCode
+    this.newCode = newCode
+    this.files = JSON.parse(files);
+    this.ignoreList = JSON.parse(ignoreList);
+  }
+
+  isStale() {
+    if (this.canExitEarly()) {
+      console.log("Exiting early");
+      return true
+    }
+
+    if (this.isModificationUnsafe()) {
+      console.log("Modification unsafe");
+      return true
+    }
+
+    return false
+  }
+
+  // Modification is considered unsafe if 
+  // 1. It is not part of ignore list
+  // 2. Modification in file is not withing ignore bounds
+  isModificationUnsafe() {
+    console.log("modifcation check")
+
+    this.files.modified_files.forEach((obj) => {
+      console.log(obj);
+      let filePath = path.join(this.newCode, obj);
+      console.log(filePath);
+      try {
+        const data = fs.readFileSync(filePath, 'utf8');
+        console.log(data);
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    return false
+  }
+
+  // Exit early if there are files other than modified files
+  canExitEarly() {
+    return (
+      this.files.added_files.length != 0 ||
+      this.files.copied_files.length != 0 ||
+      this.files.deleted_files.length != 0 ||
+      this.files.renamed_files.length != 0 ||
+      this.files.type_changed_files.length != 0 ||
+      this.files.unmerged_files.length != 0 ||
+      this.files.unknown_files.length != 0
+    )
+  }
+}
+
+
+/***/ }),
+
 /***/ 3371:
 /***/ ((module) => {
 
@@ -9686,15 +9756,20 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(5662);
 const github = __nccwpck_require__(5199);
+const Differ = __nccwpck_require__(417);
 
 try {
   const oldCode = core.getInput('old-code');
   const newCode = core.getInput('new-code');
   const allChangedFilesString = core.getInput('all-changed-files');
-
+  const ignoreList = '[\"teststst.txt\"]'
+  
   console.log(`Old ${oldCode}!`);
   console.log(`New ${newCode}!`);
   console.log(`changed files ${allChangedFilesString}!`);
+
+  let a = new Differ(oldCode, newCode, allChangedFilesString, ignoreList)
+  a.isStale()
 
   const time = (new Date()).toTimeString();
   core.setOutput("time", time);
