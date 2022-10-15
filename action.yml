@@ -13,9 +13,21 @@ inputs:
     description: 'All changed and modified files in'
     required: true
     default: '{}'
+  ignore-list:
+    description: 'Array of absolute path of files to ignore'
+    required: false
+    default: '[]'
+  start-marker:
+    description: 'Start marker in code'
+    required: false
+    default: 'srr-start'
+  end-marker:
+    description: 'End marker in code'
+    required: false
+    default: 'srr-end'
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  is-safe-change:
+    description: 'Are the changes made safe'
 runs:
   using: 'node16'
   main: 'dist/index.js'
